@@ -4,24 +4,26 @@ import (
 	"log"
 	"net/http"
   // "fmt"
+	"time"
 	"github.com/wcharczuk/go-chart"
-  "math"
+  // "math"
 )
 
 var repeat int
 
-func getXVal() []float64 {
-  ret := []float64{}
-  for i:=0; i<repeat; i++ {
-    ret = append(ret, float64(i))
+func getXVal() []time.Time {
+  ret := []time.Time{}
+  for i:=0; i<len(datas); i++ {
+    ret = append(ret, datas[i].Time)
   }
+
   return ret
 }
 
 func getYVal() []float64 {
   ret := []float64{}
-  for i:=0; i<repeat; i++ {
-    ret = append(ret, float64(math.Pow(float64(i),2)))
+  for i:=0; i<len(datas); i++ {
+    ret = append(ret, float64(datas[i].Data))
   }
   return ret
 }
@@ -35,6 +37,7 @@ func drawChart(res http.ResponseWriter, req *http.Request) {
   			Style: chart.Style{
   				Show: true, //enables / displays the x-axis
   			},
+				ValueFormatter: chart.TimeHourValueFormatter,
   		},
   		YAxis: chart.YAxis{
   			Style: chart.Style{
@@ -42,7 +45,7 @@ func drawChart(res http.ResponseWriter, req *http.Request) {
   			},
   		},
   		Series: []chart.Series{
-  			chart.ContinuousSeries{
+  			chart.TimeSeries{
   				Style: chart.Style{
   					Show:        true,
   					StrokeColor: chart.GetDefaultColor(0).WithAlpha(64),
@@ -58,24 +61,23 @@ func drawChart(res http.ResponseWriter, req *http.Request) {
 	graph.Render(chart.PNG, res)
 }
 
-func drawChartWide(res http.ResponseWriter, req *http.Request) {
-	graph := chart.Chart{
-		Width: 1920, //this overrides the default.
-		Series: []chart.Series{
-			chart.ContinuousSeries{
-				XValues: []float64{1.0, 2.0, 3.0, 4.0},
-				YValues: []float64{1.0, 4.0, 9.0, 16.0},
-			},
-		},
-	}
-
-	res.Header().Set("Content-Type", "image/png")
-	graph.Render(chart.PNG, res)
-}
+// func drawChartWide(res http.ResponseWriter, req *http.Request) {
+// 	graph := chart.Chart{
+// 		Width: 1920, //this overrides the default.
+// 		Series: []chart.Series{
+// 			chart.ContinuousSeries{
+// 				XValues: []float64{1.0, 2.0, 3.0, 4.0},
+// 				YValues: []float64{1.0, 4.0, 9.0, 16.0},
+// 			},
+// 		},
+// 	}
+//
+// 	res.Header().Set("Content-Type", "image/png")
+// 	graph.Render(chart.PNG, res)
+// }
 
 func deployGraph() {
 	http.HandleFunc("/", drawChart)
-	http.HandleFunc("/wide", drawChartWide)
-  // router := NewRouter()
+	// http.HandleFunc("/wide", drawChartWide)
 	log.Fatal(http.ListenAndServe(":8081", nil))
 }

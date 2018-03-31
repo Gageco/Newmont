@@ -6,6 +6,7 @@ import (
   "net/http"
   "io"
   "io/ioutil"
+  "time"
   // "math/rand"
   //"github.com/gorilla/mux"
 )
@@ -44,6 +45,7 @@ func dataPOST(w http.ResponseWriter, r *http.Request) {
 
   dataID +=1
   data.Id = dataID
+  data.Time = time.Now()
 
   datas = append(datas, data)
 

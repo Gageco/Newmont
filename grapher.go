@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
-  // "fmt"
+  "fmt"
 	"time"
 	"github.com/wcharczuk/go-chart"
   // "math"
@@ -77,6 +77,7 @@ func drawChart(res http.ResponseWriter, req *http.Request) {
 // }
 
 func deployGraph() {
+	fmt.Println("Graph Deployed at localhost:8081")
 	http.HandleFunc("/", drawChart)
 	// http.HandleFunc("/wide", drawChartWide)
 	log.Fatal(http.ListenAndServe(":8081", nil))

@@ -1,9 +1,9 @@
 package main
 
 import (
-	"log"
+	// "log"
 	"net/http"
-  "fmt"
+  // "fmt"
 	"time"
 	"github.com/wcharczuk/go-chart"
   // "math"
@@ -76,9 +76,9 @@ func drawChart(res http.ResponseWriter, req *http.Request) {
 // 	graph.Render(chart.PNG, res)
 // }
 
-func deployGraph() {
-	fmt.Println("Graph Deployed at localhost:8081")
-	http.HandleFunc("/", drawChart)
-	// http.HandleFunc("/wide", drawChartWide)
-	log.Fatal(http.ListenAndServe(":8080", nil))
-}
+// func deployGraph() {
+// 	fmt.Println("Graph Deployed at localhost:8081")
+// 	http.HandleFunc("/graph", drawChart)
+// 	// http.HandleFunc("/wide", drawChartWide)
+// 	log.Fatal(http.ListenAndServe(":8080", nil))
+// }

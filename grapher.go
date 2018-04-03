@@ -80,5 +80,5 @@ func deployGraph() {
 	fmt.Println("Graph Deployed at localhost:8081")
 	http.HandleFunc("/", drawChart)
 	// http.HandleFunc("/wide", drawChartWide)
-	log.Fatal(http.ListenAndServe(":8081", nil))
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }

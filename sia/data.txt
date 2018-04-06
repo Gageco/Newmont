@@ -1,0 +1,1 @@
+{"temperature": 100, "humidity": 100, "time": 2018-04-06-17:36}

@@ -1,0 +1,47 @@
+<head>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+  <div id="myDiv"></div>
+  <script>
+
+  //    CHANGE DATA PATH HERE
+  //    SERVER PATH TO data.csv
+  //    /home/super15gage/Newmont/sia/site/data.csv
+
+  Plotly.d3.csv("data.csv", function(err, rows){
+
+  function unpack(rows, key) {
+  return rows.map(function(row) { return row[key]; });
+}
+
+var trace1 = {             //Unit 1 Temperature
+  type: "scatter",
+  mode: "lines",
+  name: 'Unit 1 Temperature',
+  x: unpack(rows, 'Date'),
+  y: unpack(rows, 'Temperature'),
+  line: {color: '#17BECF'}
+}
+
+var trace2 = {              //Unit 1 Humidity
+  type: "scatter",
+  mode: "lines",
+  name: 'Unit 1 Humidity',
+  x: unpack(rows, 'Date'),
+  y: unpack(rows, 'Humidity'),
+  line: {color: '#7F7F7F'}
+}
+
+var data = [trace1,trace2];
+
+var layout = {
+  title: 'Unit 1',
+};
+
+Plotly.newPlot('myDiv', data, layout);
+})
+  Plotly.newPlot('myDiv', data);
+
+  </script>
+</body>

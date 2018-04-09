@@ -3,31 +3,33 @@ import json
 import os
 import time
 from datetime import datetime
-import Adafruit_DHT
+# import Adafruit_DHT
 
 onRaspberryPi = False
 
 wallet = {'password': ''}
 
-sensorData = {'time': '','temperature': 1.0, 'humidity': 1.0}
+
+
+sensorData = {'time': '','temperature': 10.0, 'humidity': 5.0}
 
 def getSensorData():
     print('Getting Sensor Data')
     # Be sure to use DHT22 Temperature Sensor
-    sensor = Adafruit_DHT.DHT22
+    # sensor = Adafruit_DHT.DHT22
 
     # Change Pin as necessary
-    pin = 23
+    # pin = 23
 
     # Try and get sensor reading, will retry
-    humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
-    # humidity = 100
-    # temperature = 100
+    # humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
+    humidity = humidity + 2
+    temperature = temperature + 1
 
     #get current time
     sensorData['time'] = datetime.now().strftime('%Y-%m-%d %H:%M').replace(" ", "-")
 
-    if humidity is not None and temperature is not None:
+    if True: #humidity is not None and temperature is not None:
         print('Temp={0:0.1f}*C  Humidity={1:0.1f}%'.format(temperature, humidity))
         sensorData['temperature'] = temperature
         sensorData['humidity'] = humidity
@@ -41,7 +43,7 @@ def writeDataToFile():
     print('Writing Data to File')
 
     file = open("./data.txt", "w")
-    file.write("{\"temperature\": " + str(sensorData['temperature']) + ", \"humidity\": " + str(sensorData['humidity']) + ", \"time\": " + str(sensorData['time']) + "}")
+    file.write("{\"temperature\": \"" + str(sensorData['temperature']) + "\", \"humidity\": \"" + str(sensorData['humidity']) + "\", \"time\": \"" + str(sensorData['time']) + "\"}")
     file.close()
 
 def getWalletPassword():
@@ -49,7 +51,7 @@ def getWalletPassword():
     wallet['password'] = open("./password.txt").read()
     print('Password: ' + wallet['password'])
 
-def unlockWallet():
+def checkNetwork():
     print('Checking network status')
     url = "http://localhost:9980/consensus"
     data = '{}'
@@ -60,6 +62,9 @@ def unlockWallet():
         print('Sia Network Synced')
     else:
         print('Sia Network Not Synced')
+
+def unlockWallet():
+
 
     url = "http://localhost:9980/wallet/unlock"
     response = requests.post(url, data={"encryptionpassword": wallet['password']},headers={"User-Agent":"Sia-Agent"})
@@ -105,14 +110,15 @@ def checkUpload():
             print("No files uploading")
 
 x=0
-while x < 1:
+while x < 5:
     x=1
     getSensorData()
     writeDataToFile()
+    checkNetwork()
     # getWalletPassword()
     # unlockWallet()
     uploadToSia()
     print('Checking Upload')
     checkUpload()
 
-    time.sleep(60) # wait for 1 minutes
+    time.sleep(10) # wait for 150 second

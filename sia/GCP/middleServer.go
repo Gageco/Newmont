@@ -40,7 +40,7 @@ func main() {
       break
     }
 
-    // err = deleteFile(path)
+    err = deleteFile(path)
     if err != nil {
       fmt.Println(err)
       break
@@ -167,7 +167,7 @@ func sendToGraph(csvLocation string) (error) {
 
   f, err := os.OpenFile(csvLocation, os.O_APPEND|os.O_WRONLY, 0644)
   csvString := pulledData.Date + "," + pulledData.Temperature + "," + pulledData.Humidity + "\n"
-  _, err := f.WriteString(csvString)
+  _, err = f.WriteString(csvString)
   // fmt.Println(n)
   if err != nil {
     fmt.Println(err)

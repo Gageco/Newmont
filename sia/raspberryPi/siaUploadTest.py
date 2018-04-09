@@ -11,7 +11,7 @@ wallet = {'password': ''}
 
 
 
-sensorData = {'time': '','temperature': 10.0, 'humidity': 5.0}
+sensorData = {'time': '','temperature': 20.0, 'humidity': 0.0}
 
 def getSensorData():
     print('Getting Sensor Data')
@@ -23,16 +23,14 @@ def getSensorData():
 
     # Try and get sensor reading, will retry
     # humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
-    humidity = humidity + 2
-    temperature = temperature + 1
+    sensorData['humidity'] += 5
+    sensorData['temperature'] += 2
 
     #get current time
     sensorData['time'] = datetime.now().strftime('%Y-%m-%d %H:%M').replace(" ", "-")
 
     if True: #humidity is not None and temperature is not None:
-        print('Temp={0:0.1f}*C  Humidity={1:0.1f}%'.format(temperature, humidity))
-        sensorData['temperature'] = temperature
-        sensorData['humidity'] = humidity
+        print('Temp={0:0.1f}*C  Humidity={1:0.1f}%'.format(sensorData['temperature'], sensorData['humidity']))
 
     else:
         print('Failed to get reading. Try again!')

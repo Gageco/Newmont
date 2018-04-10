@@ -46,7 +46,7 @@ func dataPOST(w http.ResponseWriter, r *http.Request) {
   }
 
   dataID +=1
-  data.Id = dataID
+  // data.Id = dataID
   data.Time = time.Now()
 
   datas = append(datas, data)

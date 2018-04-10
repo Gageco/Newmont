@@ -10,7 +10,8 @@ import (
   "path/filepath"
   "strings"
 	"time"
-  "bufio"
+	"strconv"
+  // "bufio"
   "os"
 )
 
@@ -28,14 +29,14 @@ func main() {
     //   fmt.Println(err)
     //   break
     // }
-    path = path
-    err = downloadFile(path)
+		var siaData Data
+    siaData, err := downloadFile()
     if err != nil {
       fmt.Println(err)
       break
     }
 
-    err = sendToGraph(GRAPH_FILE_LOCATION)
+    err = sendToGraph(GRAPH_FILE_LOCATION, siaData)
     if err != nil {
       fmt.Println(err)
       break
@@ -46,7 +47,7 @@ func main() {
     //   fmt.Println(err)
     //   break
     // }
-    time.Sleep(5 * time.Second)
+    time.Sleep(30 * time.Second)
   }
   time.Sleep(5 * time.Second)
   }
@@ -102,35 +103,36 @@ func checkFiles() (string, error) {
   return "", newErr
 }
 
-func downloadFile(siaPath string) (error) {
+func downloadFile() (Data, error) {
+	var siaData Datas
+	var fakeData Data
   fmt.Println("Downloading Files From Sia")
-  var siaData Datas
 
   dir, err := filepath.Abs("./")
   if err != nil {
-    return err
+    return fakeData, err
   }
   dir = strings.Replace(dir, "/", "%2F", -1)
 
-  // url := "http://localhost:9980/renter/download/" + siaPath + "?destination=" + dir +"/data.txt"
-	url := "http://newmont.io4.in:8080/data"
-  // fmt.Println(url)
+	// url := "http://newmont.io4.in:8080/data"
+	url := "http://localhost:8080/data"
+
   request, err := http.NewRequest("GET", url, nil)
   if err != nil {
-    return err
+    return fakeData, err
   }
   request.Header.Set("User-Agent","Sia-Agent")
 
   client := &http.Client{}
   response, err := client.Do(request)
   if err != nil {
-    return err
+    return fakeData, err
   }
   defer response.Body.Close()
 
   body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		return err
+		return fakeData, err
 	}
 	data := bytes.TrimSpace(body)
 
@@ -139,36 +141,42 @@ func downloadFile(siaPath string) (error) {
 	err = json.Unmarshal(data, &siaData)
 	if err != nil {
     if err.Error() != "unexpected end of JSON input" {
-      return err
+      return fakeData, err
     }
   }
-  // fmt.Println(download)
 
-  return nil
+	fmt.Println(siaData[len(siaData)-1])
+
+	if len(siaData) != 0 {
+		return siaData[len(siaData)-1], nil
+	}
+	newErr := errors.New("No Data on Server Yet")
+	return fakeData, newErr
+
 }
 
-func sendToGraph(csvLocation string) (error) {
-  var pulledData fileData
+func sendToGraph(csvLocation string, siaData Data) (error) {
+  // var pulledData fileData
 
-  inFile, err := os.Open("./data.txt")
-  if err != nil {
-    return err
-  }
-
-  scanner := bufio.NewScanner(inFile)
-	scanner.Split(bufio.ScanLines)
-
-  scanner.Scan()                  //line 1
-  text := scanner.Text()
-  inFile.Close()
-  // fmt.Println(text)
-  json.Unmarshal([]byte(text), &pulledData)
-  if err != nil {
-    return err
-  }
+  // inFile, err := os.Open("./data.txt")
+  // if err != nil {
+  //   return err
+  // }
+	//
+  // scanner := bufio.NewScanner(inFile)
+	// scanner.Split(bufio.ScanLines)
+	//
+  // scanner.Scan()                  //line 1
+  // text := scanner.Text()
+  // inFile.Close()
+  // // fmt.Println(text)
+  // json.Unmarshal([]byte(text), &pulledData)
+  // if err != nil {
+  //   return err
+  // }
 
   f, err := os.OpenFile(csvLocation, os.O_APPEND|os.O_WRONLY, 0644)
-  csvString := pulledData.Date + "," + pulledData.Temperature + "," + pulledData.Humidity + "\n"
+  csvString := siaData.Time + "," + strconv.Itoa(siaData.Temperature) + "," + strconv.Itoa(siaData.Humidity) + "\n"
   _, err = f.WriteString(csvString)
   // fmt.Println(n)
   if err != nil {

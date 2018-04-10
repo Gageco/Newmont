@@ -24,3 +24,11 @@ type fileData struct {
   Humidity       string    `json:"humidity"`
   Date           string    `json:"time"`
 }
+
+type Data struct {
+  Time               time.Time     `json:"time"`
+  Humidity           int           `json:"unit"`
+  Temperature        int           `json:"data"`
+}
+
+type Datas []Data

@@ -15,6 +15,7 @@ import (
 )
 
 func main() {
+	// /var/www/htmls/data.csv
   GRAPH_FILE_LOCATION := "/Users/gagecoprivnicar/Documents/Github/Newmont/sia/site/graph/data.csv"
 
   startup(GRAPH_FILE_LOCATION)
@@ -22,11 +23,11 @@ func main() {
   for i:=0; i< 10; i+=0 {
   for i:=0; i< 10; i+=0 {
 
-    path, err := checkFiles()
-    if err != nil {
-      fmt.Println(err)
-      break
-    }
+    // path, err := checkFiles()
+    // if err != nil {
+    //   fmt.Println(err)
+    //   break
+    // }
     path = path
     err = downloadFile(path)
     if err != nil {
@@ -40,11 +41,11 @@ func main() {
       break
     }
 
-    err = deleteFile(path)
-    if err != nil {
-      fmt.Println(err)
-      break
-    }
+    // err = deleteFile(path)
+    // if err != nil {
+    //   fmt.Println(err)
+    //   break
+    // }
     time.Sleep(5 * time.Second)
   }
   time.Sleep(5 * time.Second)
@@ -103,7 +104,7 @@ func checkFiles() (string, error) {
 
 func downloadFile(siaPath string) (error) {
   fmt.Println("Downloading Files From Sia")
-  var download generalResp
+  var siaData Datas
 
   dir, err := filepath.Abs("./")
   if err != nil {
@@ -111,7 +112,8 @@ func downloadFile(siaPath string) (error) {
   }
   dir = strings.Replace(dir, "/", "%2F", -1)
 
-  url := "http://localhost:9980/renter/download/" + siaPath + "?destination=" + dir +"/data.txt"
+  // url := "http://localhost:9980/renter/download/" + siaPath + "?destination=" + dir +"/data.txt"
+	url := "http://newmont.io4.in:8080/data"
   // fmt.Println(url)
   request, err := http.NewRequest("GET", url, nil)
   if err != nil {
@@ -134,7 +136,7 @@ func downloadFile(siaPath string) (error) {
 
 	data = bytes.TrimPrefix(data, []byte("// "))
 
-	err = json.Unmarshal(data, &download)
+	err = json.Unmarshal(data, &siaData)
 	if err != nil {
     if err.Error() != "unexpected end of JSON input" {
       return err
@@ -211,7 +213,8 @@ func deleteFile(siaPath string) (error) {
       return err
     }
   }
-  // fmt.Println(siaResp)
+
+  fmt.Println(siaResp)
 
   return nil
 }

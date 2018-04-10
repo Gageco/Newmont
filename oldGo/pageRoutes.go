@@ -45,11 +45,4 @@ var routes = Routes{
     "/data",
     dataGET,
   },
-  Route{
-    "graph",
-    "GET",
-    "/graph",
-    drawChart,
-  },
-
 }

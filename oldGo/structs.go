@@ -5,10 +5,9 @@ import (
 )
 
 type Data struct {
-  Time        time.Time     `json:"time"`
-  Unit        int           `json:"unit"`
-  Data        int           `json:"data"`
-  Id          int           `json:"id"`
+  Time               time.Time     `json:"time"`
+  Humidity           int           `json:"unit"`
+  Temperature        int           `json:"data"`
 }
 
 type Datas []Data

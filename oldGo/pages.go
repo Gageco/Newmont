@@ -22,8 +22,7 @@ func checkErr(err error) {
 
 func Index(w http.ResponseWriter, r *http.Request) {
   fmt.Fprintln(w, "Welcome Newmont Challenge Contestants!")
-  fmt.Fprintln(w, "Graph    -    http://api.io4.in:8080/graph")
-  fmt.Fprintln(w, "Data     -    http://api.io4.in:8080/data")
+  fmt.Fprintln(w, "Data     -    http://newmont.io4.in:8080/data")
 
 }
 func dataGET(w http.ResponseWriter, r *http.Request) {

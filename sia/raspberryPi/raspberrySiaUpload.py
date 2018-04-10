@@ -76,16 +76,16 @@ def uploadToSia():
     print('Uploading to Sia')
 
     cwd = os.getcwd()
-    url = "http://localhost:9980/renter/upload/data.txt"
-    source = cwd + "/data.txt"
-    response = requests.post(url, data={"datapieces":2, "paritypieces":12,"source":source},headers={"User-Agent":"Sia-Agent"})
-    # print response.status_code
-    if response.status_code == 204:
-        print('File Uploading')
-    elif response.json()['message'] == 'upload failed: a file already exists at that location':
-        print('File Already Exists')
-    else:
-        print response.json()
+    url = "http://newmont.io4.in:8080/data"
+
+    x = sensorData['temperature']
+    y = sensorData['humidity']
+    dataStr = {"temperature": int(x), "humidity": int(y)}
+
+    dat = json.dumps(dataStr)
+    response = requests.post(url, dat)
+
+    print response.json()
 
 def checkUpload():
     data = '{}'
@@ -108,11 +108,11 @@ x=0
 while True:
     x=1
     getSensorData()
-    writeDataToFile()
+    # writeDataToFile()
     # getWalletPassword()
     # unlockWallet()
     uploadToSia()
     print('Checking Upload')
-    checkUpload()
+    # checkUpload()
 
     time.sleep(60) # wait for 1 minutes

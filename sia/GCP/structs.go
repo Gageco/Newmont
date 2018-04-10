@@ -32,3 +32,7 @@ type Data struct {
 }
 
 type Datas []Data
+
+type Message struct {
+  Message    string    `json:"message"`
+}

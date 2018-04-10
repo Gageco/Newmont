@@ -26,6 +26,7 @@ URL_LOCATION := "http://newmont.io4.in:8080/data"
 
   startup(GRAPH_FILE_LOCATION)
 	var num int
+	URL_LOCATION =URL_LOCATION
 
   for i:=0; i< 10; i+=0 {
   for i:=0; i< 10; i+=0 {
@@ -36,6 +37,7 @@ URL_LOCATION := "http://newmont.io4.in:8080/data"
     //   break
     // }
     var siaData Data
+		siaData = siaData
 
     siaData, err := downloadFile(URL_LOCATION)
     if err != nil {
@@ -67,11 +69,12 @@ URL_LOCATION := "http://newmont.io4.in:8080/data"
 }
 
 func uploadToSia(url string, num int) (error) {
+	var basicWeb Message
 	fmt.Println("Uploading Files To Sia")
 
 	siaUrl := "http://localhost:9980/renter/upload/" + strconv.Itoa(num) + "data.txt"
 	// dataStr :=
-	var jsonStr = []byte(`{"datapieces":2, "paritypieces":12,"source":"/var/www/html/data.csv"}`)
+	jsonStr := []byte(`/var/www/html/data.csv`)
 	request, err := http.NewRequest("POST", siaUrl, bytes.NewBuffer(jsonStr))
 	if err != nil {
     return err
@@ -80,11 +83,28 @@ func uploadToSia(url string, num int) (error) {
 	request.Header.Set("User-Agent","Sia-Agent")
 
 	client := &http.Client{}
-	response, err := client.Do(request)
-	if err != nil {
-		return err
-	}
-	defer response.Body.Close()
+  response, err := client.Do(request)
+  if err != nil {
+    return err
+  }
+  defer response.Body.Close()
+
+  body, err := ioutil.ReadAll(response.Body)
+    if err != nil {
+    	return err
+    }
+    data := bytes.TrimSpace(body)
+
+    data = bytes.TrimPrefix(data, []byte("// "))
+
+    err = json.Unmarshal(data, &basicWeb)
+    if err != nil {
+    	if err.Error() != "unexpected end of JSON input" {
+      return err
+    }
+  }
+
+	// fmt.Println(basicWeb)
 
 
 	return nil
